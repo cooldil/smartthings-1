@@ -30,15 +30,16 @@ RUN apt-get install -y python2.7 build-essential libpcap-dev wget tar \
  && mkdir -p /stnp/plugins \
  && wget -O - https://github.com/${repo}/smartthings/tarball/${branch} \
   | tar -zxvf - --wildcards --strip-components=2 -C /stnp/ ${repo}-smartthings-*/smartthings-nodeproxy/ \
+ && wget -O - https://github.com/${repo}/smartthings/tarball/${branch} \
+  | tar -zxvf - --wildcards --strip-components=2 -C /tmp/ ${repo}-smartthings-*/docker/ \
+ && cp /tmp/config.sample /stnp/config.json \
+ && cp /tmp/docker-entrypoint.sh /docker-entrypoint.sh \
+ && rm -rf /tmp/* \
  && cd /stnp \
  && rm -f restart.me smartthings-nodeproxy.service config.json \
  && npm install \
  && apt-get remove -y --auto-remove wget build-essential libpcap-dev libpcap0.8-dev --purge \
- && apt-get clean \
- && rm -rf /tmp/* 
-
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-COPY config.sample /stnp/config.json
+ && apt-get clean 
 
 EXPOSE 54240
 
